@@ -68,7 +68,6 @@ services:
       ZK_CONNECT: zookeeper:2181
       MAIN_TOPIC: user-activity-data
 
-
   streaming-app:
     image: ${REGISTRY_URI}/ucu-class/streaming-app:${STUDENT_NAME}-0.1
     depends_on:

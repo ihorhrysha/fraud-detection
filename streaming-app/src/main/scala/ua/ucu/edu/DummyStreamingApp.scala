@@ -23,23 +23,27 @@ object DummyStreamingApp extends App {
 
   val builder = new StreamsBuilder
 
-  val testStream = builder.stream[String, String]("weather_data")
+  //TODO - two KTables black ip and email patterns
+  //val blackDataStream = builder.stream[String, String](System.getenv(Config.EnrichmentTopic))
+  val userActivityStream = builder.stream[String, String](System.getenv(Config.MainTopic))
 
-  testStream.foreach { (k, v) =>
+  userActivityStream.peek((k, v) => {
     logger.info(s"record processed $k->$v")
-  }
+  }).to(System.getenv(Config.EnrichedTopic))
 
-  testStream.to("test_topic_out")
-
-  val streams = new KafkaStreams(builder.build(), props)
-  streams.cleanUp()
-  streams.start()
+  val streams = new KafkaStreams (builder.build (), props)
+  streams.cleanUp ()
+  streams.start ()
 
   sys.addShutdownHook {
-    streams.close(10, TimeUnit.SECONDS)
-  }
+  streams.close (10, TimeUnit.SECONDS)
+}
 
   object Config {
     val KafkaBrokers = "KAFKA_BROKERS"
+    val MainTopic = "MAIN_TOPIC"
+    val EnrichmentTopic = "ENRICHMENT_TOPIC"
+    val EnrichedTopic = "ENRICHED_TOPIC"
   }
+
 }

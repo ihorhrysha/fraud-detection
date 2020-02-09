@@ -13,11 +13,11 @@ object DummyDataProducer {
   // This is just for testing purposes
   def pushTestData(): Unit = {
     val BrokerList: String = System.getenv(Config.KafkaBrokers)
-    val Topic = "sensor-data"
+    val Topic = System.getenv(Config.MainTopic)
 
     val props = new Properties()
     props.put("bootstrap.servers", BrokerList)
-    props.put("client.id", "solar-panel-1")
+    props.put("client.id", "web-site-1")
     props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer")
     props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer")
 
@@ -25,7 +25,7 @@ object DummyDataProducer {
 
     val producer = new KafkaProducer[String, String](props)
 
-    val testMsg = "12.3702"
+    val testMsg = "{ username:john_doe, ip: 192.168.0.1, operation:singin }"
 
     while (true) {
       Thread.sleep(10000)
@@ -40,4 +40,5 @@ object DummyDataProducer {
 
 object Config {
   val KafkaBrokers = "KAFKA_BROKERS"
+  val MainTopic = "MAIN_TOPIC"
 }

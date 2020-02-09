@@ -11,14 +11,14 @@ object Main extends App {
 
   val logger = LoggerFactory.getLogger(getClass)
 
-  logger.info("======== Weather Provider App Init ========")
+  logger.info("======== Black Data Provider App Init ========")
 
   import duration._
 
   //scheduler.schedule(5 seconds, 10 seconds,
   new Runnable {
     override def run(): Unit = {
-      logger.debug("weather request")
+      logger.debug("black data request")
       // ???
       // todo - ask weather api and send data to kafka topic - recommended format is json - or you can come up with simpler string-based protocol
     }

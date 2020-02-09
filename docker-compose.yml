@@ -41,7 +41,6 @@ services:
     ports:
       - 8082:8082
     hostname: rest-proxy
-    container_name: rest-proxy
     environment:
       KAFKA_REST_HOST_NAME: rest-proxy
       KAFKA_REST_BOOTSTRAP_SERVERS: 'kafka:9092'
@@ -51,7 +50,6 @@ services:
   schema-registry:
     image: confluentinc/cp-schema-registry:5.1.0
     hostname: schema-registry
-    container_name: schema-registry
     depends_on:
       - zookeeper
       - kafka
@@ -61,13 +59,15 @@ services:
       SCHEMA_REGISTRY_HOST_NAME: schema-registry
       SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: 'zookeeper:2181'
 
-  solar-panel-app:
-    image: ${REGISTRY_URI}/ucu-class/solar-panel-emulator:${STUDENT_NAME}-0.1
+  user-activity-emulator:
+    image: ${REGISTRY_URI}/ucu-class/user-activity-emulator:${STUDENT_NAME}-0.1
     depends_on:
       - kafka
     environment:
       KAFKA_BROKERS: kafka:9092
       ZK_CONNECT: zookeeper:2181
+      MAIN_TOPIC: user-activity-data
+
 
   streaming-app:
     image: ${REGISTRY_URI}/ucu-class/streaming-app:${STUDENT_NAME}-0.1
@@ -75,11 +75,15 @@ services:
       - kafka
     environment:
       KAFKA_BROKERS: kafka:9092
+      MAIN_TOPIC: user-activity-data
+      ENRICHMENT_TOPIC: black-data
+      ENRICHED_TOPIC: enriched-user-data
 
-  weather-provider:
-    image: ${REGISTRY_URI}/ucu-class/weather-provider:${STUDENT_NAME}-0.1
+  black-data-provider:
+    image: ${REGISTRY_URI}/ucu-class/black-data-provider:${STUDENT_NAME}-0.1
     depends_on:
       - kafka
     environment:
       KAFKA_BROKERS: kafka:9092
       ZK_CONNECT: zookeeper:2181
+      ENRICHMENT_TOPIC: black-data

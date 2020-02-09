@@ -1,4 +1,4 @@
-name := "streaming-ucu-final-project"
+name := "final-project"
 
 ThisBuild / version := "0.1"
 
@@ -43,6 +43,7 @@ def dockerSettings(debugPort: Option[Int] = None) = Seq(
     val artifactTargetPath = s"/project/${artifactSource.name}"
     val scriptSourceDir = baseDirectory.value / "../scripts"
     val projectDir = "/project/"
+    //Programming Dockerfile
     new Dockerfile {
       from("anapsix/alpine-java:latest")
       add(artifactSource, artifactTargetPath)
@@ -53,6 +54,8 @@ def dockerSettings(debugPort: Option[Int] = None) = Seq(
   },
   imageNames in docker := Seq(
     ImageName(
+
+      // TODO store locally
       registry = Some(sys.env("REGISTRY_URI")),
       namespace = Some("ucu-class"),
       repository = name.value,
@@ -65,23 +68,23 @@ def dockerSettings(debugPort: Option[Int] = None) = Seq(
 envFileName in ThisBuild := ".env"
 
 lazy val root = (project in file("."))
-  .settings(name := "streaming-ucu-final-project")
-  .aggregate(solar_panel_emulator, weather_provider, streaming_app)
+  .settings(name := "final-project")
+  .aggregate(user_activity_emulator, black_data_provider, streaming_app)
 
-lazy val solar_panel_emulator = (project in file("solar-panel-emulator"))
+lazy val user_activity_emulator = (project in file("user-activity-emulator"))
   .enablePlugins(sbtdocker.DockerPlugin)
   .settings(
-    name := "solar-panel-emulator",
+    name := "user-activity-emulator",
     libraryDependencies ++= commonDependencies ++ akkaDependencies ++ Seq(
       // your additional dependencies go here
     ),
     dockerSettings()
   )
 
-lazy val weather_provider = (project in file("weather-provider"))
+lazy val black_data_provider = (project in file("black-data-provider"))
   .enablePlugins(sbtdocker.DockerPlugin)
   .settings(
-    name := "weather-provider",
+    name := "black-data-provider",
     libraryDependencies ++= commonDependencies ++ akkaDependencies ++ Seq(
       // your additional dependencies go here
     ),

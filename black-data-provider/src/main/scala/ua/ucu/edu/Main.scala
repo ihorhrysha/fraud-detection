@@ -27,4 +27,5 @@ object Main extends App {
 
   // for testing purposes only
   DummyDataProducer.pushTestData()
+
 }

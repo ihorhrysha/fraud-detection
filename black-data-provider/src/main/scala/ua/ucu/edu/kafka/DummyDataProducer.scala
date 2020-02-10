@@ -1,5 +1,6 @@
 package ua.ucu.edu.kafka
 
+import java.io.FileNotFoundException
 import java.util.Properties
 
 import org.apache.kafka.clients.producer.{Callback, KafkaProducer, ProducerRecord, RecordMetadata}
@@ -25,22 +26,40 @@ object DummyDataProducer {
 
     logger.info("initializing producer")
 
+
     val producer = new KafkaProducer[String, String](props)
 
-    val testMsg = "i am black"
+    //val testMsg = "i am black"
 
-    val blackIpList : List[String] = Source.fromResource("black_ip.csv").getLines().toList
-    val blackEmailList : List[String] = Source.fromResource("black_email.csv").getLines().toList
+    //val blackIpList : List[String] = Source.fromResource("black_ip.csv").getLines().toList
+    //val blackEmailList : List[String] = Source.fromResource("black_email.csv").getLines().toList
+    val BLACKIPURL = "https://raw.githubusercontent.com/ihorhrysha/fraud-detection/master/black-data-provider/src/main/resources/black_ip.csv"
+    val BLACKEMAILURL = "https://raw.githubusercontent.com/ihorhrysha/fraud-detection/master/black-data-provider/src/main/resources/black_email.csv"
+
+    logger.info("reaching raw files")
+    try {
+      println(Source.fromURL(BLACKIPURL).mkString.split(System.getProperty("line.separator")).toList)
+
+      val blackIpList : List[String] = Source.fromURL(BLACKIPURL).mkString.split(System.getProperty("line.separator")).toList
+      val blackEmailList : List[String] = Source.fromURL(BLACKEMAILURL).mkString.split(System.getProperty("line.separator")).toList
+
+
+
 
     while (true) {
       //Thread.sleep(1000)
-      logger.info(s"[$Topic] $testMsg")
+      //logger.info(s"[$Topic] $testMsg")
       //val data = new ProducerRecord[String, String](Topic, testMsg)
       blackIpList.foreach(ip => sendMessage(producer, Topic, ip))
       blackEmailList.foreach(ip => sendMessage(producer, Topic, ip))
      /* producer.send(data, (metadata: RecordMetadata, exception: Exception) => {
         logger.info(metadata.toString, exception)
       }) */
+    }
+
+    } catch {
+      case e: FileNotFoundException => logger.error("File not found " + e)
+      case e: Exception =>println(e)
     }
 
     producer.close()

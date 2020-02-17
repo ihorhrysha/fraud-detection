@@ -24,7 +24,8 @@ object DummyStreamingApp extends App {
   val builder = new StreamsBuilder
 
   //TODO - two KTables black ip and email patterns
-  //val blackDataStream = builder.stream[String, String](System.getenv(Config.EnrichmentTopic))
+  val blackDataStream = builder.stream[String, String](System.getenv(Config.EnrichmentTopic))
+
   val userActivityStream = builder.stream[String, String](System.getenv(Config.MainTopic))
 
   userActivityStream.peek((k, v) => {

@@ -3,6 +3,7 @@ package ua.ucu.edu
 import java.util.Properties
 import java.util.concurrent.TimeUnit
 
+import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.streams.scala.ImplicitConversions._
 import org.apache.kafka.streams.scala._
 import org.apache.kafka.streams.{KafkaStreams, StreamsConfig}
@@ -18,6 +19,9 @@ object DummyStreamingApp extends App {
   props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, System.getenv(Config.KafkaBrokers))
   props.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, Long.box(5 * 1000))
   props.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, Long.box(0))
+  //props.put(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://localhost:8081")
+  props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
+
 
   import Serdes._
 
@@ -26,19 +30,21 @@ object DummyStreamingApp extends App {
   //TODO - two KTables black ip and email patterns
   val blackDataStream = builder.stream[String, String](System.getenv(Config.EnrichmentTopic))
 
+
   val userActivityStream = builder.stream[String, String](System.getenv(Config.MainTopic))
 
   userActivityStream.peek((k, v) => {
-    logger.info(s"record processed $k->$v")
+    //logger.info(s"record processed $k->$v")
+    println(s"record processed $k->$v")
   }).to(System.getenv(Config.EnrichedTopic))
 
-  val streams = new KafkaStreams (builder.build (), props)
-  streams.cleanUp ()
-  streams.start ()
+  val streams = new KafkaStreams(builder.build(), props)
+  streams.cleanUp()
+  streams.start()
 
   sys.addShutdownHook {
-  streams.close (10, TimeUnit.SECONDS)
-}
+    streams.close(10, TimeUnit.SECONDS)
+  }
 
   object Config {
     val KafkaBrokers = "KAFKA_BROKERS"

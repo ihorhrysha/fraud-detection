@@ -1,0 +1,297 @@
+{
+	"info": {
+		"_postman_id": "a6535eb5-6bb3-4d31-a163-0157efe6338f",
+		"name": "Schema Registry",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GET topics",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8082/topics/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"topics",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST user + schema",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/vnd.kafka.avro.v2+json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/vnd.kafka.v2+json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"value_schema\": \"{\\\"type\\\": \\\"record\\\", \\\"name\\\": \\\"User\\\", \\\"fields\\\": [{\\\"name\\\": \\\"name\\\", \\\"type\\\": \\\"string\\\"},{\\\"name\\\": \\\"email\\\", \\\"type\\\": \\\"string\\\"},{\\\"name\\\": \\\"IP\\\", \\\"type\\\": \\\"string\\\"}]}\",\n    \"records\": [\n        {\n            \"value\": {\n                \"name\": \"Ihor Hrysha\",\n                \"email\": \"ihor.hrysha@gmail.com\",\n                \"IP\": \"192.168.0.10\"\n            }\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8082/topics/user-activity-data",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"topics",
+						"user-activity-data"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST user + schema id/value",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/vnd.kafka.avro.v2+json"
+					},
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/vnd.kafka.v2+json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"key_schema\": \"{\\\"name\\\":\\\"user_id\\\"  ,\\\"type\\\": \\\"int\\\"   }\",\n    \"value_schema\": \"{\\\"type\\\": \\\"record\\\", \\\"name\\\": \\\"User\\\", \\\"fields\\\": [{\\\"name\\\": \\\"name\\\", \\\"type\\\": \\\"string\\\"},{\\\"name\\\": \\\"email\\\", \\\"type\\\": \\\"string\\\"},{\\\"name\\\": \\\"IP\\\", \\\"type\\\": \\\"string\\\"}]}\",\n    \"records\": [\n        {\n            \"key\": 1,\n            \"value\": {\n                \"name\": \"Krishna Hrysha\",\n                \"email\": \"krishna.hrysha@gmail.com\",\n                \"IP\": \"192.168.0.111\"\n            }\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8082/topics/user-activity-data",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"topics",
+						"user-activity-data"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST user + schema id/value by ID",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/vnd.kafka.avro.v2+json"
+					},
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/vnd.kafka.v2+json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"key_schema_id\": 62,\n    \"value_schema_id\": 61,\n    \"records\": [\n        {\n            \"key\": 1,\n            \"value\": {\n                \"name\": \"Krishna Hrysha\",\n                \"email\": \"krishna.hrysha@gmail.com\",\n                \"IP\": \"192.168.0.111\"\n            }\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8082/topics/user-activity-data",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"topics",
+						"user-activity-data"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST user + schema by ID",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/vnd.kafka.avro.v2+json"
+					},
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/vnd.kafka.v2+json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"value_schema_id\": 61,\n    \"records\": [\n        {\n            \"value\": {\n                \"name\": \"Vasia Hrysha\",\n                \"email\": \"vasia.hrysha@gmail.com\",\n                \"IP\": \"192.168.0.11\"\n            }\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8082/topics/user-activity-data",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"topics",
+						"user-activity-data"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST create consumer",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/vnd.kafka.v2+json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/vnd.kafka.v2+json",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"front-app-instance\",\n    \"format\": \"avro\",\n    \"auto.offset.reset\": \"earliest\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8082/consumers/front-group",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"consumers",
+						"front-group"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET subscriptions",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8082/consumers/front-group/instances/front-app-instance/subscription",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"consumers",
+						"front-group",
+						"instances",
+						"front-app-instance",
+						"subscription"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET subscriptions add topic",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/vnd.kafka.v2+json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"topics\": [\n        \"user-activity-data\"\n    ]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8082/consumers/front-group/instances/front-app-instance/subscription",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"consumers",
+						"front-group",
+						"instances",
+						"front-app-instance",
+						"subscription"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET subscriptions Copy",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/vnd.kafka.avro.v2+json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8082/consumers/front-group/instances/front-app-instance/records",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"consumers",
+						"front-group",
+						"instances",
+						"front-app-instance",
+						"records"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

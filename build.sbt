@@ -11,6 +11,10 @@ ThisBuild / scalacOptions ++= Seq(
   "-encoding", "UTF-8",
   "-Xlint")
 
+resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
+resolvers += "io.confluent" at "http://packages.confluent.io/maven/"
+
+
 val akkaVersion = "2.5.20"
 
 val commonDependencies = Seq(
@@ -26,6 +30,9 @@ val commonDependencies = Seq(
 
 val streamsDependencies = Seq(
   "org.apache.kafka" %% "kafka-streams-scala" % "2.0.1" withSources(),
+  "org.apache.avro" % "avro" % "1.8.2",
+  "io.confluent" % "kafka-streams-avro-serde" % "4.1.0",
+  "io.confluent" % "kafka-avro-serializer" % "3.2.1",
   "javax.ws.rs" % "javax.ws.rs-api" % "2.1.1" artifacts Artifact("javax.ws.rs-api", "jar", "jar"),
   "org.apache.kafka" % "kafka-streams-test-utils" % "2.0.1" % Test
 )

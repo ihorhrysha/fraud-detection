@@ -98,6 +98,7 @@ services:
       - kafka
     environment:
       KAFKA_BROKERS: kafka:9092
+      SCHEMA_REGISTRY: "http://schema-registry:8081"
       MAIN_TOPIC: user-activity-data
       ENRICHMENT_TOPIC: black-data
       ENRICHED_TOPIC: enriched-user-data
@@ -117,8 +118,3 @@ services:
       - schema-registry
     ports:
       - "80:80"
-    # environment:
-    #   KAFKA_BROKERS: kafka:9092
-    #   MAIN_TOPIC: user-activity-data
-    #   ENRICHMENT_TOPIC: black-data
-    #   ENRICHED_TOPIC: enriched-user-data

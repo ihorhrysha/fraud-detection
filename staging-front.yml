@@ -1,0 +1,12 @@
+version: "2"
+services:
+  front:
+    image: $REGISTRY_URI/ucu-class/front:$STUDENT_NAME-0.1
+    environment:
+      - KAFKA_BROKERS=$KAFKA_BROKERS # TODO rest API needed
+    logging:
+      driver: awslogs
+      options:
+        awslogs-group: streaming-ucu
+        awslogs-region: us-east-1
+        awslogs-stream-prefix: $STUDENT_NAME

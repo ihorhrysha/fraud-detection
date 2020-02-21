@@ -19,6 +19,12 @@ Base project for a final assignment, contains:
 
 To build all of the components - simply run `sbt docker` from the root project folder. This will compile code, build artifacts and push to the local docker repo.
 
+To build Docker image for front end - just run `./kafka_client.sh`. !!!TODO API configuration parameter
+
+To test it locally run `docker run -it -p 80:80 --rm 768305773658.dkr.ecr.us-east-1.amazonaws.com/ucu-class/front:hrysha-0.1` and localhost in the browser
+
+REST API info `https://docs.confluent.io/current/kafka-rest/quickstart.html`
+
 ## Deploy
 
 ### Local
@@ -31,6 +37,11 @@ Example:
 ```
 docker run --net=host --rm confluentinc/cp-kafka:5.1.0 kafka-topics --create --topic test_topic_out --partitions 4 --replication-factor 1 --if-not-exists --zookeeper localhost:2181
 ```
+
+#### Local ports
+
+front:80 - front
+rest-proxy:8082 - REST API
 
 ### Staging
 

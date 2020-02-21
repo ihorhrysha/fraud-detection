@@ -1,11 +1,11 @@
 ---
-version: '2'
+version: "2"
 services:
   zookeeper:
     image: confluentinc/cp-zookeeper:5.1.0
     hostname: zookeeper
     ports:
-      - '2181:2181'
+      - "2181:2181"
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
@@ -16,10 +16,10 @@ services:
     image: confluentinc/cp-enterprise-kafka:5.1.0
     hostname: kafka
     ports:
-      - '9092:9092'
-      - '39092:39092'
+      - "9092:9092"
+      - "39092:39092"
     depends_on:
-    - zookeeper
+      - zookeeper
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
@@ -43,9 +43,9 @@ services:
     hostname: rest-proxy
     environment:
       KAFKA_REST_HOST_NAME: rest-proxy
-      KAFKA_REST_BOOTSTRAP_SERVERS: 'kafka:9092'
+      KAFKA_REST_BOOTSTRAP_SERVERS: "kafka:9092"
       KAFKA_REST_LISTENERS: "http://0.0.0.0:8082"
-      KAFKA_REST_SCHEMA_REGISTRY_URL: 'http://schema-registry:8081'
+      KAFKA_REST_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
 
   schema-registry:
     image: confluentinc/cp-schema-registry:5.1.0
@@ -57,7 +57,31 @@ services:
       - "8081:8081"
     environment:
       SCHEMA_REGISTRY_HOST_NAME: schema-registry
-      SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: 'zookeeper:2181'
+      SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: "zookeeper:2181"
+
+  control-center:
+    image: confluentinc/cp-enterprise-control-center:5.1.0
+    hostname: control-center
+    depends_on:
+      - zookeeper
+      - kafka
+      - schema-registry
+#      - connect
+#      - ksql-server
+    ports:
+      - "9021:9021"
+    environment:
+      CONTROL_CENTER_BOOTSTRAP_SERVERS: 'kafka:9092'
+      CONTROL_CENTER_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+#      CONTROL_CENTER_CONNECT_CLUSTER: 'connect:8083'
+#      CONTROL_CENTER_KSQL_URL: "http://ksql-server:8088"
+#      CONTROL_CENTER_KSQL_ADVERTISED_URL: "http://localhost:8088"
+      CONTROL_CENTER_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
+      CONTROL_CENTER_REPLICATION_FACTOR: 1
+      CONTROL_CENTER_INTERNAL_TOPICS_PARTITIONS: 1
+      CONTROL_CENTER_MONITORING_INTERCEPTOR_TOPIC_PARTITIONS: 1
+      CONFLUENT_METRICS_TOPIC_REPLICATION: 1
+      PORT: 9021
 
   user-activity-emulator:
     image: ${REGISTRY_URI}/ucu-class/user-activity-emulator:${STUDENT_NAME}-0.1
@@ -74,6 +98,7 @@ services:
       - kafka
     environment:
       KAFKA_BROKERS: kafka:9092
+      SCHEMA_REGISTRY: "http://schema-registry:8081"
       MAIN_TOPIC: user-activity-data
       ENRICHMENT_TOPIC: black-data
       ENRICHED_TOPIC: enriched-user-data
@@ -86,3 +111,10 @@ services:
       KAFKA_BROKERS: kafka:9092
       ZK_CONNECT: zookeeper:2181
       ENRICHMENT_TOPIC: black-data
+
+  front:
+    image: ${REGISTRY_URI}/ucu-class/front:${STUDENT_NAME}-0.1
+    depends_on:
+      - schema-registry
+    ports:
+      - "80:80"

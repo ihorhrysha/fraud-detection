@@ -11,8 +11,8 @@ ThisBuild / scalacOptions ++= Seq(
   "-encoding", "UTF-8",
   "-Xlint")
 
-resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
-resolvers += "io.confluent" at "http://packages.confluent.io/maven/"
+resolvers in ThisBuild += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
+resolvers in ThisBuild += "io.confluent" at "http://packages.confluent.io/maven/"
 
 
 val akkaVersion = "2.5.20"

@@ -1,8 +1,8 @@
 package ua.ucu.edu.provider
 
-import ua.ucu.edu.model._
+//import ua.ucu.edu.model._
 
 trait BlackDataProviderApi {
 
-  def isBlack(user: User): Boolean
+  //def isBlack(user: User): Boolean
 }

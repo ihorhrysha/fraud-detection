@@ -12,8 +12,6 @@ import scala.io.Source
 object DummyDataProducer {
 
   val logger: Logger = LoggerFactory.getLogger(getClass)
- // val BLACKIPURL = "https://raw.githubusercontent.com/ihorhrysha/fraud-detection/master/black-data-provider/src/main/resources/black_ip.csv"
- // val BLACKEMAILURL = "https://raw.githubusercontent.com/ihorhrysha/fraud-detection/master/black-data-provider/src/main/resources/black_email.csv"
 
   def pushTestData(): Unit = {
     val BrokerList: String = System.getenv(Config.KafkaBrokers)

@@ -8,6 +8,7 @@ import faker from 'faker';
 import { Usercard } from '../components';
 // import { fetchComments } from '../actions';
 import '../css/style.css';
+import { sendUsers } from '../API';
 
 const axios = require('axios');
 
@@ -16,7 +17,6 @@ export const MainPage = () => {
   let timedGenerator;
   // const dispatch = useDispatch();
 
-  // eslint-disable-next-line no-unused-vars
   const [fakeData, setFakeData] = useState([]);
   const [blackList, setBlackList] = useState([
     'item1',
@@ -24,11 +24,12 @@ export const MainPage = () => {
     'item3',
     'item4'
   ]);
+  const [counter, setCounter] = useState(0);
   // useEffect(() => {
   //   dispatch(fetchComments());
   // }, [fakeData]);
 
-  const generateFakeUsers = () => {
+  const generateFakeUsers = async () => {
     const fakeArray = [];
     // eslint-disable-next-line no-plusplus
     for (let index = 0; index < 5; index++) {
@@ -39,8 +40,10 @@ export const MainPage = () => {
       fakeArray.push({ id, name, email, ip });
     }
     let clonedStateArray = JSON.parse(JSON.stringify(fakeData));
-    clonedStateArray = clonedStateArray.concat(fakeArray);
+    clonedStateArray = fakeArray.concat(clonedStateArray);
     setFakeData(clonedStateArray);
+    const sendResult = await sendUsers(fakeArray);
+    console.log(sendResult);
   };
 
   return (

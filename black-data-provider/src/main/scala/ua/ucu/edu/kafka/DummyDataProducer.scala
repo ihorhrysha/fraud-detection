@@ -12,13 +12,15 @@ import scala.io.Source
 object DummyDataProducer {
 
   val logger: Logger = LoggerFactory.getLogger(getClass)
-  val BLACKIPURL = "https://raw.githubusercontent.com/ihorhrysha/fraud-detection/master/black-data-provider/src/main/resources/black_ip.csv"
-  val BLACKEMAILURL = "https://raw.githubusercontent.com/ihorhrysha/fraud-detection/master/black-data-provider/src/main/resources/black_email.csv"
+ // val BLACKIPURL = "https://raw.githubusercontent.com/ihorhrysha/fraud-detection/master/black-data-provider/src/main/resources/black_ip.csv"
+ // val BLACKEMAILURL = "https://raw.githubusercontent.com/ihorhrysha/fraud-detection/master/black-data-provider/src/main/resources/black_email.csv"
 
   def pushTestData(): Unit = {
     val BrokerList: String = System.getenv(Config.KafkaBrokers)
 
     val Topic = System.getenv(Config.EnrichmentTopic)
+    val BlackIPList = System.getenv(Config.BlackIPUrl)
+    val BlackEmailList = System.getenv(Config.BlackMailUrl)
 
     val props = new Properties()
     props.put("bootstrap.servers", BrokerList)
@@ -35,10 +37,10 @@ object DummyDataProducer {
 
 
     try {
-      println(Source.fromURL(BLACKIPURL).mkString.split(System.getProperty("line.separator")).toList)
+      println(Source.fromURL(BlackIPList).mkString.split(System.getProperty("line.separator")).toList)
 
-      val blackIpList : List[String] = Source.fromURL(BLACKIPURL).mkString.split(System.getProperty("line.separator")).toList
-      val blackEmailList : List[String] = Source.fromURL(BLACKEMAILURL).mkString.split(System.getProperty("line.separator")).toList
+      val blackIpList : List[String] = Source.fromURL(BlackIPList).mkString.split(System.getProperty("line.separator")).toList
+      val blackEmailList : List[String] = Source.fromURL(BlackEmailList).mkString.split(System.getProperty("line.separator")).toList
 
 
 
@@ -69,4 +71,6 @@ object DummyDataProducer {
 object Config {
   val KafkaBrokers = "KAFKA_BROKERS"
   val EnrichmentTopic = "ENRICHMENT_TOPIC"
+  val BlackIPUrl = "BLACKIPURL"
+  val BlackMailUrl = "BLACKEMAILURL"
 }

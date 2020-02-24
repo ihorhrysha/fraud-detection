@@ -44,27 +44,22 @@ object DummyStreamingApp extends App {
 
   //TODO - two KTables black ip and email patterns
 
-  val blackDataTable: GlobalKTable[String, BlackData] = builder.globalTable("shmopic")
-
-  //  // for cleaning System.getenv(Config.EnrichmentTopic)
-  //  val streamBlack: KStream[String, String] = builder.stream("test_topic_out")
-  //    streamBlack.foreach((k, v) => {
-  //      logger.info(s"With mail processed $k->$v")
-  //    })
-
-
-  val streamBlack: KStream[String, BlackData] = builder.stream(System.getenv(Config.EnrichmentTopic))
-
-  streamBlack.selectKey((k, v) => v.data).peek((k, v) => {
-    logger.info(s"To shmopic $k->$v")
-  }).to("shmopic");
+  val blackDataTable: GlobalKTable[String, BlackData] = builder.globalTable(System.getenv(Config.EnrichmentTopic))
+//
+//  // for cleaning System.getenv(Config.EnrichmentTopic)
+//  val streamBlack: KStream[String, String] = builder.stream("test_topic_out")
+//  streamBlack.foreach((k, v) => {
+//    logger.info(s"With mail processed $k->$v")
+//  })
+//
+//
+//  val streamBlack: KStream[String, BlackData] = builder.stream(System.getenv(Config.EnrichmentTopic))
+//
+//  streamBlack.selectKey((k, v) => v.data).peek((k, v) => {
+//    logger.info(s"To shmopic $k->$v")
+//  }).to("shmopic");
 
   val userActivityStream = builder.stream[String, User](System.getenv(Config.MainTopic))
-
-  // for cleaning
-  //  streamBlack.foreach((k, v) => {
-  //    logger.info(s"With mail processed $k->$v")
-  //  })
 
   // branching stream
   val predicates: List[(String, User) => Boolean] = List(
@@ -75,20 +70,18 @@ object DummyStreamingApp extends App {
   val branches: Array[KStream[String, User]] = userActivityStream.branch(predicates: _*)
 
   branches(0)
-    .selectKey((k, v) => v.email)
     .leftJoin(blackDataTable)(
-      (userId, user) => user.email,
+      (_, user) => user.email,
       (user, blackData) => if (blackData != null) EnrichedUser(user.name, user.email, user.IP, "bad email") else null
-    ).filter((userId, enrichedUser) => enrichedUser != null).peek((k, v) => {
+    ).filter((_, enrichedUser) => enrichedUser != null).peek((k, v) => {
     logger.info(s"Enriched record mail processed $k->$v")
   }).to("et")
 
   branches(1)
-    .selectKey((k, v) => v.IP)
     .leftJoin(blackDataTable)(
-      (userId, user) => user.IP,
+      (_, user) => user.IP,
       (user, blackData) => if (blackData != null) EnrichedUser(user.name, user.email, user.IP, "bad IP") else null
-    ).filter((userId, enrichedUser) => enrichedUser != null).peek((k, v) => {
+    ).filter((_, enrichedUser) => enrichedUser != null).peek((k, v) => {
     logger.info(s"Enriched record IP processed $k->$v")
   }).to("et")
 

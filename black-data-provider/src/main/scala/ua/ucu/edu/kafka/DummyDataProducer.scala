@@ -3,8 +3,11 @@ package ua.ucu.edu.kafka
 import java.io.FileNotFoundException
 import java.util.Properties
 
-import org.apache.kafka.clients.producer.{Callback, KafkaProducer, ProducerRecord, RecordMetadata}
+import io.confluent.kafka.serializers.KafkaAvroSerializer
+import org.apache.kafka.clients.producer.{Callback, KafkaProducer, ProducerConfig, ProducerRecord, RecordMetadata}
+import org.apache.kafka.common.serialization.StringSerializer
 import org.slf4j.{Logger, LoggerFactory}
+import ua.ucu.edu.model.{BlackData}
 
 import scala.io.Source
 
@@ -12,53 +15,52 @@ import scala.io.Source
 object DummyDataProducer {
 
   val logger: Logger = LoggerFactory.getLogger(getClass)
-  val BLACKIPURL = "https://raw.githubusercontent.com/ihorhrysha/fraud-detection/master/black-data-provider/src/main/resources/black_ip.csv"
-  val BLACKEMAILURL = "https://raw.githubusercontent.com/ihorhrysha/fraud-detection/master/black-data-provider/src/main/resources/black_email.csv"
 
   def pushTestData(): Unit = {
     val BrokerList: String = System.getenv(Config.KafkaBrokers)
 
     val Topic = System.getenv(Config.EnrichmentTopic)
+    val BlackIPList = System.getenv(Config.BlackIPUrl)
+    val BlackEmailList = System.getenv(Config.BlackMailUrl)
 
     val props = new Properties()
-    props.put("bootstrap.servers", BrokerList)
-    props.put("client.id", "black-data-provider")
-    props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer")
-    props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer")
+    props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BrokerList)
+    props.put(ProducerConfig.CLIENT_ID_CONFIG, "black-data-provider")
+    props.put("schema.registry.url", System.getenv(Config.SchemaRegistry))
+    props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, classOf[StringSerializer].getCanonicalName)
+    props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, classOf[KafkaAvroSerializer].getCanonicalName)
+    props.put(ProducerConfig.ACKS_CONFIG, "all")
+    props.put(ProducerConfig.RETRIES_CONFIG, "0")
 
     logger.info("initializing producer")
 
 
-    val producer = new KafkaProducer[String, String](props)
-    //val testMsg = "i am black"
+    val producer = new KafkaProducer[String, BlackData](props)
+
     logger.info("reaching raw files")
 
-
     try {
-      println(Source.fromURL(BLACKIPURL).mkString.split(System.getProperty("line.separator")).toList)
+      println(Source.fromURL(BlackIPList).mkString.split(System.getProperty("line.separator")).toList)
 
-      val blackIpList : List[String] = Source.fromURL(BLACKIPURL).mkString.split(System.getProperty("line.separator")).toList
-      val blackEmailList : List[String] = Source.fromURL(BLACKEMAILURL).mkString.split(System.getProperty("line.separator")).toList
-
-
-
+      val blackIpList: List[String] = Source.fromURL(BlackIPList).mkString.split(System.getProperty("line.separator")).toList
+      val blackEmailList: List[String] = Source.fromURL(BlackEmailList).mkString.split(System.getProperty("line.separator")).toList
 
       while (true) {
-        blackIpList.foreach(ip => sendMessage(producer, Topic, ip))
-        blackEmailList.foreach(mail => sendMessage(producer, Topic, mail))
+        blackIpList.foreach(ip => sendMessage(producer, Topic, ip, BlackData("IP", ip)))
+        blackEmailList.foreach(mail => sendMessage(producer, Topic, mail, BlackData("IP", mail)))
       }
 
     } catch {
       case e: FileNotFoundException => logger.error("File not found " + e)
-      case e: Exception =>println(e)
+      case e: Exception => println(e)
     }
 
     producer.close()
   }
 
-  def sendMessage(prod: KafkaProducer[String, String], topic: String, msg: String) : Unit =  {
-    val precord = new ProducerRecord[String, String](topic, msg)
-    prod.send(precord, (metadata: RecordMetadata, exception: Exception) => {
+  def sendMessage(prod: KafkaProducer[String, BlackData], topic: String, key: String, value: BlackData): Unit = {
+    val recordBlackData = new ProducerRecord[String, BlackData](topic, key, value)
+    prod.send(recordBlackData, (metadata: RecordMetadata, exception: Exception) => {
       logger.info(metadata.toString, exception)
     })
     Thread.sleep(1000)
@@ -69,4 +71,7 @@ object DummyDataProducer {
 object Config {
   val KafkaBrokers = "KAFKA_BROKERS"
   val EnrichmentTopic = "ENRICHMENT_TOPIC"
+  val BlackIPUrl = "BLACKIPURL"
+  val BlackMailUrl = "BLACKEMAILURL"
+  val SchemaRegistry = "SCHEMA_REGISTRY"
 }

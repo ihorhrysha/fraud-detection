@@ -86,7 +86,7 @@ lazy val user_activity_emulator = (project in file("user-activity-emulator"))
       // your additional dependencies go here
     ),
     dockerSettings()
-  )
+  ).dependsOn(common)
 
 lazy val black_data_provider = (project in file("black-data-provider"))
   .enablePlugins(sbtdocker.DockerPlugin)
@@ -96,7 +96,7 @@ lazy val black_data_provider = (project in file("black-data-provider"))
       // your additional dependencies go here
     ),
     dockerSettings()
-  )
+  ).dependsOn(common)
 
 lazy val streaming_app = (project in file("streaming-app"))
   .enablePlugins(sbtdocker.DockerPlugin)
@@ -104,7 +104,16 @@ lazy val streaming_app = (project in file("streaming-app"))
     name := "streaming-app",
     libraryDependencies ++= commonDependencies ++ streamsDependencies ++ Seq(
       // your additional dependencies go here
+
     ),
     dockerSettings(),
     mainClass in assembly := Some("ua.ucu.edu.DummyStreamingApp")
+  ).dependsOn(common)
+
+lazy val common = (project in file("common"))
+  .settings(
+    name := "common",
+    libraryDependencies ++= commonDependencies ++ streamsDependencies ++ Seq(
+      // your additional dependencies go here
+    )
   )

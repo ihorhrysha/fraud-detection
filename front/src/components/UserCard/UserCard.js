@@ -1,8 +1,6 @@
 import React from 'react';
 import { List, Avatar } from 'antd';
 
-// eslint-disable-next-line react/display-name
-// eslint-disable-next-line react/prop-types
 export const Usercard = ({ name, email, ip }) => (
   <List.Item
     style={{

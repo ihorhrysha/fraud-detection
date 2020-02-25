@@ -1,7 +1,6 @@
 package ua.ucu.edu
 
-import ua.ucu.edu.kafka.DummyDataProducer
-
+import ua.ucu.edu.kafka.{BlackIPFetcher, DummyDataProducer}
 import org.slf4j.LoggerFactory
 
 import scala.concurrent.duration
@@ -27,5 +26,6 @@ object Main extends App {
 
   // for testing purposes only
   DummyDataProducer.pushTestData()
+  new Thread(new BlackIPFetcher).start
 
 }

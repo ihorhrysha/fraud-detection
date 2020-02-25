@@ -40,7 +40,7 @@ object DummyDataProducer {
     logger.info("reaching raw files")
 
     try {
-      println(Source.fromURL(BlackIPList).mkString.split(System.getProperty("line.separator")).toList)
+      //println(Source.fromURL(BlackIPList).mkString.split(System.getProperty("line.separator")).toList)
 
       val blackIpList: List[String] = Source.fromURL(BlackIPList).mkString.split(System.getProperty("line.separator")).toList
       val blackEmailList: List[String] = Source.fromURL(BlackEmailList).mkString.split(System.getProperty("line.separator")).toList
@@ -74,4 +74,5 @@ object Config {
   val BlackIPUrl = "BLACKIPURL"
   val BlackMailUrl = "BLACKEMAILURL"
   val SchemaRegistry = "SCHEMA_REGISTRY"
+  val BlackIPListPublic = "BLACKIPURL_PUBLIC"
 }

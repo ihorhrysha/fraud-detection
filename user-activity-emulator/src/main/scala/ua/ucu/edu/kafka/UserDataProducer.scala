@@ -67,10 +67,10 @@ object UserDataProducer {
           logger.info("Black data injection")
           if (ran < 5) {
             logger.info("Black email injected")
-            email = blackEmailList(r.nextInt(blackEmailList.length))
+            email = blackEmailList(r.nextInt(blackEmailList.length)).trim()
           } else {
             logger.info("Black ip injected")
-            ip = blackIpList(r.nextInt(blackIpList.length))
+            ip = blackIpList(r.nextInt(blackIpList.length)).trim()
           }
         }
 

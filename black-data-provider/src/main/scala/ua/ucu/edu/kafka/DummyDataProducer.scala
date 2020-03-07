@@ -47,7 +47,7 @@ object DummyDataProducer {
 
       while (true) {
         blackIpList.foreach(ip => sendMessage(producer, Topic, ip, BlackData("IP", ip)))
-        blackEmailList.foreach(mail => sendMessage(producer, Topic, mail, BlackData("IP", mail)))
+        blackEmailList.foreach(mail => sendMessage(producer, Topic, mail, BlackData("EMAIL", mail)))
       }
 
     } catch {
@@ -59,6 +59,7 @@ object DummyDataProducer {
   }
 
   def sendMessage(prod: KafkaProducer[String, BlackData], topic: String, key: String, value: BlackData): Unit = {
+    logger.info("topic: " + topic + " key: " + key + " BlackData: " + value)
     val recordBlackData = new ProducerRecord[String, BlackData](topic, key, value)
     prod.send(recordBlackData, (metadata: RecordMetadata, exception: Exception) => {
       logger.info(metadata.toString, exception)

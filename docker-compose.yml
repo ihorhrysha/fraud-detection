@@ -111,6 +111,10 @@ services:
       KAFKA_BROKERS: kafka:9092
       ZK_CONNECT: zookeeper:2181
       ENRICHMENT_TOPIC: black-data
+      SCHEMA_REGISTRY: "http://schema-registry:8081"
+      BLACKIPURL: "https://raw.githubusercontent.com/ihorhrysha/fraud-detection/master/black-data-provider/src/main/resources/black_ip.csv"
+      BLACKEMAILURL: "https://raw.githubusercontent.com/ihorhrysha/fraud-detection/master/black-data-provider/src/main/resources/black_email.csv"
+      BLACKIPURL_PUBLIC: "https://myip.ms/files/blacklist/csf/latest_blacklist.txt"
 
   front:
     image: ${REGISTRY_URI}/ucu-class/front:${STUDENT_NAME}-0.1

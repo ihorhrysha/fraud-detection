@@ -83,7 +83,8 @@ lazy val user_activity_emulator = (project in file("user-activity-emulator"))
   .settings(
     name := "user-activity-emulator",
     libraryDependencies ++= commonDependencies ++ akkaDependencies ++ Seq(
-      // your additional dependencies go here
+      // https://mvnrepository.com/artifact/com.github.javafaker/javafaker
+      "com.github.javafaker" % "javafaker" % "1.0.1"
     ),
     dockerSettings()
   ).dependsOn(common)

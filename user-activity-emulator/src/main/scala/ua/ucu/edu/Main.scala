@@ -1,8 +1,9 @@
 package ua.ucu.edu
 
-import ua.ucu.edu.kafka.DummyDataProducer
+import ua.ucu.edu.kafka.UserDataProducer
 
 object Main extends App {
 
-  DummyDataProducer.pushTestData()
+  UserDataProducer.pushTestData()
+
 }

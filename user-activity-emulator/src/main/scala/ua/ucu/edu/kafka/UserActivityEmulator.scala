@@ -1,14 +1,18 @@
 package ua.ucu.edu.kafka
 
-import java.util.{Locale, Properties}
+import java.io.FileNotFoundException
+import java.util.concurrent.TimeUnit
+import java.util.Properties
 
 import com.github.javafaker.Faker
-import com.github.javafaker.service.{FakeValuesService, RandomService}
 import io.confluent.kafka.serializers.KafkaAvroSerializer
 import org.apache.kafka.clients.producer.{KafkaProducer, ProducerConfig, ProducerRecord, RecordMetadata}
 import org.apache.kafka.common.serialization.StringSerializer
 import org.slf4j.{Logger, LoggerFactory}
 import ua.ucu.edu.model.User
+
+import scala.io.Source
+import scala.util.Random
 
 // delete_me - for testing purposes
 object UserActivityEmulator {
@@ -18,11 +22,15 @@ object UserActivityEmulator {
   // This is just for testing purposes
   def emulate(): Unit = {
     val BrokerList: String = System.getenv(Config.KafkaBrokers)
+
     val Topic = System.getenv(Config.MainTopic)
+
+    val BlackIPList = System.getenv(Config.BlackIPUrl)
+    val BlackEmailList = System.getenv(Config.BlackMailUrl)
 
     val props = new Properties()
     props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BrokerList)
-    props.put(ProducerConfig.CLIENT_ID_CONFIG, "web-site-1")
+    props.put(ProducerConfig.CLIENT_ID_CONFIG, "user-data-provider")
     props.put("schema.registry.url", System.getenv(Config.SchemaRegistry))
     props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, classOf[StringSerializer].getCanonicalName)
     props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, classOf[KafkaAvroSerializer].getCanonicalName)
@@ -33,23 +41,55 @@ object UserActivityEmulator {
 
     val producer = new KafkaProducer[String, User](props)
 
-    while (true) {
-      Thread.sleep(10000)
+    val faker = new Faker()
+    val rand = Random
 
-      val faker = new Faker()
+    try {
 
-      val newUser = User(faker.funnyName().name(), faker.internet().emailAddress(), faker.internet().ipV4Address())
+      val blackIpList: List[String] = Source.fromURL(BlackIPList).mkString.split(System.getProperty("line.separator")).toList
+      val blackEmailList: List[String] = Source.fromURL(BlackEmailList).mkString.split(System.getProperty("line.separator")).toList
 
-      logger.info(s"[$Topic] $newUser")
+      while (true) {
 
-      val recordUserData = new ProducerRecord[String, User](Topic, faker.internet().uuid(), newUser)
-      producer.send(recordUserData, (metadata: RecordMetadata, exception: Exception) => {
-        logger.info(metadata.toString, exception)
-      })
+        val fname = faker.name()
+        val name = fname.fullName()
 
+        var email = fname.username() + "@" + faker.internet().domainName()
+        var ip = faker.internet().ipV4Address()
+
+
+        val randInt = rand.nextInt(100)
+        if(randInt<10) {
+          logger.info("Black data injection")
+          if (randInt < 5) {
+            logger.info("Black email injected")
+            email = blackEmailList(rand.nextInt(blackEmailList.length)).trim()
+          } else {
+            logger.info("Black ip injected")
+            ip = blackIpList(rand.nextInt(blackIpList.length)).trim()
+          }
+        }
+
+        val user  = new User(name, email, ip)
+
+        logger.info("topic: " + Topic + " key: " + name + " User: " + user)
+        val recordUserData = new ProducerRecord[String, User](Topic, name, user)
+        producer.send(recordUserData, (metadata: RecordMetadata, exception: Exception) => {
+          logger.info(metadata.toString, exception)
+        })
+        Thread.sleep(rand.nextInt(10000))
+      }
+
+      //Only way to stop app
+      sys.addShutdownHook {
+        producer.close(10, TimeUnit.SECONDS)
+      }
+
+    } catch {
+      case e: FileNotFoundException => logger.error("File not found " + e)
+      case e: Exception => println(e)
     }
 
-    producer.close()
   }
 }
 
@@ -57,4 +97,6 @@ object Config {
   val KafkaBrokers = "KAFKA_BROKERS"
   val MainTopic = "MAIN_TOPIC"
   val SchemaRegistry = "SCHEMA_REGISTRY"
+  val BlackIPUrl = "BLACKIPURL"
+  val BlackMailUrl = "BLACKEMAILURL"
 }

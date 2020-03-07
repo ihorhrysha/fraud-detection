@@ -28,7 +28,7 @@ object DummyStreamingApp extends App {
   props.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, Long.box(0))
   props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String.getClass.getName)
   props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, classOf[SpecificAvroSerde[_ <: SpecificRecord]])
-  props.put(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, System.getenv(Config.SchemaRegistry)) //TODO move to env
+  props.put(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, System.getenv(Config.SchemaRegistry))
   //  props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
 
   val builder: StreamsBuilder = new StreamsBuilder
@@ -41,8 +41,6 @@ object DummyStreamingApp extends App {
   usersSerde.configure(Collections.singletonMap(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, System.getenv(Config.SchemaRegistry)), false)
   blackDataSerde.configure(Collections.singletonMap(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, System.getenv(Config.SchemaRegistry)), false)
   enrichedUsersSerde.configure(Collections.singletonMap(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, System.getenv(Config.SchemaRegistry)), false)
-
-  //TODO - two KTables black ip and email patterns
 
   val blackDataTable: GlobalKTable[String, BlackData] = builder.globalTable(System.getenv(Config.EnrichmentTopic))
 //

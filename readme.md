@@ -130,23 +130,23 @@ rest-proxy:8082 - REST API
    - create/describe/list topics
      - create
      ```
-     kafka-topics.sh --zookeeper 10.0.2.170:2181,10.0.0.194:2181,10.0.1.119:2181 --create --topic test_topic_out --replication-factor 3 --partitions 2
+     kafka-topics.sh --zookeeper z-3.ucustreamingclass.mf5zba.c7.kafka.us-east-1.amazonaws.com:2181,z-2.ucustreamingclass.mf5zba.c7.kafka.us-east-1.amazonaws.com:2181,z-1.ucustreamingclass.mf5zba.c7.kafka.us-east-1.amazonaws.com:2181 --create --topic test_topic_out --replication-factor 3 --partitions 2
      ```
      - describe
      ```
-     kafka-topics.sh --zookeeper 10.0.2.170:2181,10.0.0.194:2181,10.0.1.119:2181 --describe --topic test_topic_out
+     kafka-topics.sh --zookeeper z-3.ucustreamingclass.mf5zba.c7.kafka.us-east-1.amazonaws.com:2181,z-2.ucustreamingclass.mf5zba.c7.kafka.us-east-1.amazonaws.com:2181,z-1.ucustreamingclass.mf5zba.c7.kafka.us-east-1.amazonaws.com:2181 --describe --topic test_topic_out
      ```
      - list
      ```
-     kafka-topics.sh --zookeeper 10.0.2.170:2181,10.0.0.194:2181,10.0.1.119:2181 --list
+     kafka-topics.sh --zookeeper z-3.ucustreamingclass.mf5zba.c7.kafka.us-east-1.amazonaws.com:2181,z-2.ucustreamingclass.mf5zba.c7.kafka.us-east-1.amazonaws.com:2181,z-1.ucustreamingclass.mf5zba.c7.kafka.us-east-1.amazonaws.com:2181 --list
      ```
    - consume topic
      ```
-     kafka-console-consumer.sh --bootstrap-server 10.0.1.107:9092,10.0.2.71:9092,10.0.0.112:9092 --topic sensor-data --from-beginning
+     kafka-console-consumer.sh --bootstrap-server z-3.ucustreamingclass.mf5zba.c7.kafka.us-east-1.amazonaws.com:2181,z-2.ucustreamingclass.mf5zba.c7.kafka.us-east-1.amazonaws.com:2181,z-1.ucustreamingclass.mf5zba.c7.kafka.us-east-1.amazonaws.com:2181 --topic sensor-data --from-beginning
      ```
    - produce into topic
      ```
-     kafka-console-producer.sh --broker-list 10.0.1.107:9092,10.0.2.71:9092,10.0.0.112:9092 --topic sensor-data
+     kafka-console-producer.sh --broker-list z-3.ucustreamingclass.mf5zba.c7.kafka.us-east-1.amazonaws.com:2181,z-2.ucustreamingclass.mf5zba.c7.kafka.us-east-1.amazonaws.com:2181,z-1.ucustreamingclass.mf5zba.c7.kafka.us-east-1.amazonaws.com:2181 --topic sensor-data
      ```
 
 ###### **!!!** Important: the IP addresses of Kafka brokers may change and data in topics deleted. If so - you will be informed in the chat.

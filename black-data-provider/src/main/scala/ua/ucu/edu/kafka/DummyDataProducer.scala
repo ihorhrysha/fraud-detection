@@ -39,7 +39,6 @@ object DummyDataProducer {
     logger.info("reaching raw files")
 
     try {
-      //println(Source.fromURL(BlackIPList).mkString.split(System.getProperty("line.separator")).toList)
 
       val blackIpList: List[String] = Source.fromURL(BlackIPList).mkString.split(System.getProperty("line.separator")).toList
       val blackEmailList: List[String] = Source.fromURL(BlackEmailList).mkString.split(System.getProperty("line.separator")).toList
@@ -47,6 +46,9 @@ object DummyDataProducer {
       while (true) {
         blackIpList.foreach(ip => sendMessage(producer, Topic, ip, BlackData("IP", ip)))
         blackEmailList.foreach(mail => sendMessage(producer, Topic, mail, BlackData("EMAIL", mail)))
+
+        Thread.sleep(5000)
+
       }
 
     } catch {
@@ -63,7 +65,6 @@ object DummyDataProducer {
     prod.send(recordBlackData, (metadata: RecordMetadata, exception: Exception) => {
       logger.info(metadata.toString, exception)
     })
-    Thread.sleep(1000)
   }
 
 }

@@ -92,6 +92,8 @@ services:
       ZK_CONNECT: zookeeper:2181
       MAIN_TOPIC: ${MAIN_TOPIC}
       SCHEMA_REGISTRY: ${SCHEMA_REGISTRY}
+      BLACKIPURL: ${BLACKIPURL}
+      BLACKEMAILURL: ${BLACKEMAILURL}
 
   streaming-app:
     image: ${REGISTRY_URI}/ucu-class/streaming-app:${STUDENT_NAME}-0.1

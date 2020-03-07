@@ -32,22 +32,22 @@ services:
       KAFKA_LOG4J_ROOT_LOGLEVEL: WARN
       KAFKA_TOOLS_LOG4J_LOGLEVEL: ERROR
 
-  rest-proxy:
-    image: confluentinc/cp-kafka-rest:5.1.0
-    depends_on:
-      - zookeeper
-      - kafka
-      - schema-registry
-    ports:
-      - 8082:8082
-    hostname: rest-proxy
-    environment:
-      KAFKA_REST_HOST_NAME: rest-proxy
-      KAFKA_REST_BOOTSTRAP_SERVERS: "kafka:9092"
-      KAFKA_REST_LISTENERS: "http://0.0.0.0:8082"
-      KAFKA_REST_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
-      KAFKA_REST_ACCESS_CONTROL_ALLOW_ORIGIN: "*"
-      KAFKA_REST_ACCESS_CONTROL_ALLOW_METHODS: "GET,POST,PUT,DELETE,OPTIONS"
+#  rest-proxy:
+#    image: confluentinc/cp-kafka-rest:5.1.0
+#    depends_on:
+#      - zookeeper
+#      - kafka
+#      - schema-registry
+#    ports:
+#      - 8082:8082
+#    hostname: rest-proxy
+#    environment:
+#      KAFKA_REST_HOST_NAME: rest-proxy
+#      KAFKA_REST_BOOTSTRAP_SERVERS: "kafka:9092"
+#      KAFKA_REST_LISTENERS: "http://0.0.0.0:8082"
+#      KAFKA_REST_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
+#      KAFKA_REST_ACCESS_CONTROL_ALLOW_ORIGIN: "*"
+#      KAFKA_REST_ACCESS_CONTROL_ALLOW_METHODS: "GET,POST,PUT,DELETE,OPTIONS"
 
   schema-registry:
     image: confluentinc/cp-schema-registry:5.1.0
@@ -61,29 +61,27 @@ services:
       SCHEMA_REGISTRY_HOST_NAME: schema-registry
       SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: "zookeeper:2181"
 
-  control-center:
-    image: confluentinc/cp-enterprise-control-center:5.1.0
-    hostname: control-center
-    depends_on:
-      - zookeeper
-      - kafka
-      - schema-registry
-#      - connect
-#      - ksql-server
-    ports:
-      - "9021:9021"
-    environment:
-      CONTROL_CENTER_BOOTSTRAP_SERVERS: 'kafka:9092'
-      CONTROL_CENTER_ZOOKEEPER_CONNECT: 'zookeeper:2181'
-#      CONTROL_CENTER_CONNECT_CLUSTER: 'connect:8083'
-#      CONTROL_CENTER_KSQL_URL: "http://ksql-server:8088"
-#      CONTROL_CENTER_KSQL_ADVERTISED_URL: "http://localhost:8088"
-      CONTROL_CENTER_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
-      CONT#ROL_CENTER_REPLICATION_FACTOR: 1
-      CONTROL_CENTER_INTERNAL_TOPICS_PARTITIONS: 1
-      CONTROL_CENTER_MONITORING_INTERCEPTOR_TOPIC_PARTITIONS: 1
-      CONFLUENT_METRICS_TOPIC_REPLICATION: 1
-      PORT: 9021
+#  control-center:
+#    image: confluentinc/cp-enterprise-control-center:5.1.0
+#    hostname: control-center
+#    depends_on:
+#      - zookeeper
+#      - kafka
+#      - schema-registry
+#    ports:
+#      - "9021:9021"
+#    environment:
+#      CONTROL_CENTER_BOOTSTRAP_SERVERS: 'kafka:9092'
+#      CONTROL_CENTER_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+##      CONTROL_CENTER_CONNECT_CLUSTER: 'connect:8083'
+##      CONTROL_CENTER_KSQL_URL: "http://ksql-server:8088"
+##      CONTROL_CENTER_KSQL_ADVERTISED_URL: "http://localhost:8088"
+#      CONTROL_CENTER_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
+#      CONTROL_CENTER_REPLICATION_FACTOR: 1
+#      CONTROL_CENTER_INTERNAL_TOPICS_PARTITIONS: 1
+#      CONTROL_CENTER_MONITORING_INTERCEPTOR_TOPIC_PARTITIONS: 1
+#      CONFLUENT_METRICS_TOPIC_REPLICATION: 1
+#      PORT: 9021
 
   user-activity-emulator:
     image: ${REGISTRY_URI}/ucu-class/user-activity-emulator:${STUDENT_NAME}-0.1
@@ -92,7 +90,8 @@ services:
     environment:
       KAFKA_BROKERS: kafka:9092
       ZK_CONNECT: zookeeper:2181
-      MAIN_TOPIC: user-activity-data
+      MAIN_TOPIC: ${MAIN_TOPIC}
+      SCHEMA_REGISTRY: ${SCHEMA_REGISTRY}
 
   streaming-app:
     image: ${REGISTRY_URI}/ucu-class/streaming-app:${STUDENT_NAME}-0.1
@@ -100,10 +99,10 @@ services:
       - kafka
     environment:
       KAFKA_BROKERS: kafka:9092
-      SCHEMA_REGISTRY: "http://schema-registry:8081"
-      MAIN_TOPIC: user-activity-data
-      ENRICHMENT_TOPIC: black-data
-      ENRICHED_TOPIC: enriched-user-data
+      SCHEMA_REGISTRY: ${SCHEMA_REGISTRY}
+      MAIN_TOPIC: ${MAIN_TOPIC}
+      ENRICHMENT_TOPIC: ${ENRICHMENT_TOPIC}
+      ENRICHED_TOPIC: ${ENRICHED_TOPIC}
 
   black-data-provider:
     image: ${REGISTRY_URI}/ucu-class/black-data-provider:${STUDENT_NAME}-0.1
@@ -112,15 +111,15 @@ services:
     environment:
       KAFKA_BROKERS: kafka:9092
       ZK_CONNECT: zookeeper:2181
-      ENRICHMENT_TOPIC: black-data
-      SCHEMA_REGISTRY: "http://schema-registry:8081"
-      BLACKIPURL: "https://raw.githubusercontent.com/ihorhrysha/fraud-detection/master/black-data-provider/src/main/resources/black_ip.csv"
-      BLACKEMAILURL: "https://raw.githubusercontent.com/ihorhrysha/fraud-detection/master/black-data-provider/src/main/resources/black_email.csv"
-      BLACKIPURL_PUBLIC: "https://myip.ms/files/blacklist/csf/latest_blacklist.txt"
+      ENRICHMENT_TOPIC: ${ENRICHMENT_TOPIC}
+      SCHEMA_REGISTRY: ${SCHEMA_REGISTRY}
+      BLACKIPURL: ${BLACKIPURL}
+      BLACKEMAILURL: ${BLACKEMAILURL}
+      BLACKIPURL_PUBLIC: ${BLACKIPURL_PUBLIC}
 
-  front:
-    image: ${REGISTRY_URI}/ucu-class/front:${STUDENT_NAME}-0.1
-    depends_on:
-      - schema-registry
-    ports:
-      - "80:80"
+#  front:
+#    image: ${REGISTRY_URI}/ucu-class/front:${STUDENT_NAME}-0.1
+#    depends_on:
+#      - schema-registry
+#    ports:
+#      - "80:80"

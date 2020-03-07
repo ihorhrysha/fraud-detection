@@ -1,8 +1,8 @@
 package ua.ucu.edu
 
-import ua.ucu.edu.kafka.DummyDataProducer
+import ua.ucu.edu.kafka.UserActivityEmulator
 
 object Main extends App {
 
-  DummyDataProducer.pushTestData()
+  UserActivityEmulator.emulate()
 }

@@ -34,7 +34,6 @@ object DummyDataProducer {
 
     logger.info("initializing producer")
 
-
     val producer = new KafkaProducer[String, BlackData](props)
 
     logger.info("reaching raw files")

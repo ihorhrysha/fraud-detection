@@ -1,9 +1,11 @@
 package ua.ucu.edu.kafka
 
-import java.util.Properties
+import java.util.{Locale, Properties}
 
+import com.github.javafaker.Faker
+import com.github.javafaker.service.{FakeValuesService, RandomService}
 import io.confluent.kafka.serializers.KafkaAvroSerializer
-import org.apache.kafka.clients.producer.{Callback, KafkaProducer, ProducerConfig, ProducerRecord, RecordMetadata}
+import org.apache.kafka.clients.producer.{KafkaProducer, ProducerConfig, ProducerRecord, RecordMetadata}
 import org.apache.kafka.common.serialization.StringSerializer
 import org.slf4j.{Logger, LoggerFactory}
 import ua.ucu.edu.model.User
@@ -34,11 +36,13 @@ object UserActivityEmulator {
     while (true) {
       Thread.sleep(10000)
 
-      val newUser = User("Ihor Hrysha", "i.hrysha@gmail.com", "123.123.124.14")
+      val faker = new Faker()
+
+      val newUser = User(faker.funnyName().name(), faker.internet().emailAddress(), faker.internet().ipV4Address())
 
       logger.info(s"[$Topic] $newUser")
 
-      val recordUserData = new ProducerRecord[String, User](Topic, "key", newUser)
+      val recordUserData = new ProducerRecord[String, User](Topic, faker.internet().uuid(), newUser)
       producer.send(recordUserData, (metadata: RecordMetadata, exception: Exception) => {
         logger.info(metadata.toString, exception)
       })

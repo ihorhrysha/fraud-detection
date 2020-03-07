@@ -34,7 +34,9 @@ val streamsDependencies = Seq(
   "io.confluent" % "kafka-streams-avro-serde" % "4.1.0",
   "io.confluent" % "kafka-avro-serializer" % "3.2.1",
   "javax.ws.rs" % "javax.ws.rs-api" % "2.1.1" artifacts Artifact("javax.ws.rs-api", "jar", "jar"),
-  "org.apache.kafka" % "kafka-streams-test-utils" % "2.0.1" % Test
+  "org.apache.kafka" % "kafka-streams-test-utils" % "2.0.1" % Test,
+  // https://mvnrepository.com/artifact/com.github.javafaker/javafaker
+  "com.github.javafaker" % "javafaker" % "1.0.2"
 )
 
 val akkaDependencies = Seq (

@@ -35,7 +35,7 @@ To deploy local environment and start testing - simply run `docker-compose up` f
 
 Example:
 ```
-docker run --net=host --rm confluentinc/cp-kafka:5.1.0 kafka-topics --create --topic test_topic_out --partitions 4 --replication-factor 1 --if-not-exists --zookeeper localhost:2181
+kafka-topics --create --topic enriched-user-data --partitions 4 --replication-factor 1 --if-not-exists --zookeeper zookeeper:2181
 ```
 
 #### Local ports
@@ -106,6 +106,14 @@ aws ecr create-repository --repository-name ucu-class/user-activity-emulator
    ```
 
    Read AWS ecs-cli documentation if you want/need - above scripts are just wrappers around *ecs-cli*.
+
+
+Steps to deploy all containers
+```bash
+
+./staging_compose.sh schema-registry up
+
+```
 
 ##### Important
    **!!!** If you use ecs-cli directly make sure you specify --project-name parameter properly, otherwise you may interfere with someone else's deployment.

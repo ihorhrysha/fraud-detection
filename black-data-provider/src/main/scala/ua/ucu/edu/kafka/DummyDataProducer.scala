@@ -40,14 +40,14 @@ object DummyDataProducer {
 
     try {
 
-      val blackIpList: List[String] = Source.fromURL(BlackIPList).mkString.split(System.getProperty("line.separator")).toList
-      val blackEmailList: List[String] = Source.fromURL(BlackEmailList).mkString.split(System.getProperty("line.separator")).toList
+      val blackIpList: List[String] = Source.fromURL(BlackIPList).mkString.split("\r\n").toList
+      val blackEmailList: List[String] = Source.fromURL(BlackEmailList).mkString.split("\r\n").toList
 
       while (true) {
         blackIpList.foreach(ip => sendMessage(producer, Topic, ip, BlackData("IP", ip)))
         blackEmailList.foreach(mail => sendMessage(producer, Topic, mail, BlackData("EMAIL", mail)))
 
-        Thread.sleep(5000)
+        Thread.sleep(1000*60*60*24)
 
       }
 
@@ -60,11 +60,14 @@ object DummyDataProducer {
   }
 
   def sendMessage(prod: KafkaProducer[String, BlackData], topic: String, key: String, value: BlackData): Unit = {
-    logger.info("topic: " + topic + " key: " + key + " BlackData: " + value)
+
     val recordBlackData = new ProducerRecord[String, BlackData](topic, key, value)
     prod.send(recordBlackData, (metadata: RecordMetadata, exception: Exception) => {
-      logger.info(metadata.toString, exception)
+      logger.info("topic: " + topic + " key: " + key + " BlackData: " + value)
     })
+
+    Thread.sleep(200)
+
   }
 
 }

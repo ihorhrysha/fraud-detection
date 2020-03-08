@@ -46,8 +46,8 @@ object UserActivityEmulator {
 
     try {
 
-      val blackIpList: List[String] = Source.fromURL(BlackIPList).mkString.split(System.getProperty("line.separator")).toList
-      val blackEmailList: List[String] = Source.fromURL(BlackEmailList).mkString.split(System.getProperty("line.separator")).toList
+      val blackIpList: List[String] = Source.fromURL(BlackIPList).mkString.split("\r\n").toList
+      val blackEmailList: List[String] = Source.fromURL(BlackEmailList).mkString.split("\r\n").toList
 
       while (true) {
 
@@ -60,24 +60,24 @@ object UserActivityEmulator {
 
         val randInt = rand.nextInt(100)
         if(randInt<10) {
-          logger.info("Black data injection")
           if (randInt < 5) {
-            logger.info("Black email injected")
+            logger.info("---Black email injected---")
             email = blackEmailList(rand.nextInt(blackEmailList.length)).trim()
           } else {
-            logger.info("Black ip injected")
+            logger.info("---Black ip injected---")
             ip = blackIpList(rand.nextInt(blackIpList.length)).trim()
           }
         }
 
         val user  = new User(name, email, ip)
 
-        logger.info("topic: " + Topic + " key: " + name + " User: " + user)
+
         val recordUserData = new ProducerRecord[String, User](Topic, name, user)
         producer.send(recordUserData, (metadata: RecordMetadata, exception: Exception) => {
-          logger.info(metadata.toString, exception)
+          logger.info("topic: " + Topic + " key: " + name + " User: " + user)
+          //logger.info(metadata.toString, exception)
         })
-        Thread.sleep(rand.nextInt(10000))
+        Thread.sleep(rand.nextInt(3000))
       }
 
       //Only way to stop app

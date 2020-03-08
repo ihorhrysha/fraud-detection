@@ -61,27 +61,27 @@ services:
       SCHEMA_REGISTRY_HOST_NAME: schema-registry
       SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: "zookeeper:2181"
 
-#  control-center:
-#    image: confluentinc/cp-enterprise-control-center:5.1.0
-#    hostname: control-center
-#    depends_on:
-#      - zookeeper
-#      - kafka
-#      - schema-registry
-#    ports:
-#      - "9021:9021"
-#    environment:
-#      CONTROL_CENTER_BOOTSTRAP_SERVERS: 'kafka:9092'
-#      CONTROL_CENTER_ZOOKEEPER_CONNECT: 'zookeeper:2181'
-##      CONTROL_CENTER_CONNECT_CLUSTER: 'connect:8083'
-##      CONTROL_CENTER_KSQL_URL: "http://ksql-server:8088"
-##      CONTROL_CENTER_KSQL_ADVERTISED_URL: "http://localhost:8088"
-#      CONTROL_CENTER_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
-#      CONTROL_CENTER_REPLICATION_FACTOR: 1
-#      CONTROL_CENTER_INTERNAL_TOPICS_PARTITIONS: 1
-#      CONTROL_CENTER_MONITORING_INTERCEPTOR_TOPIC_PARTITIONS: 1
-#      CONFLUENT_METRICS_TOPIC_REPLICATION: 1
-#      PORT: 9021
+  control-center:
+    image: confluentinc/cp-enterprise-control-center:5.1.0
+    hostname: control-center
+    depends_on:
+      - zookeeper
+      - kafka
+      - schema-registry
+    ports:
+      - "9021:9021"
+    environment:
+      CONTROL_CENTER_BOOTSTRAP_SERVERS: 'kafka:9092'
+      CONTROL_CENTER_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+#      CONTROL_CENTER_CONNECT_CLUSTER: 'connect:8083'
+#      CONTROL_CENTER_KSQL_URL: "http://ksql-server:8088"
+#      CONTROL_CENTER_KSQL_ADVERTISED_URL: "http://localhost:8088"
+      CONTROL_CENTER_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
+      CONTROL_CENTER_REPLICATION_FACTOR: 1
+      CONTROL_CENTER_INTERNAL_TOPICS_PARTITIONS: 1
+      CONTROL_CENTER_MONITORING_INTERCEPTOR_TOPIC_PARTITIONS: 1
+      CONFLUENT_METRICS_TOPIC_REPLICATION: 1
+      PORT: 9021
 
   user-activity-emulator:
     image: ${REGISTRY_URI}/ucu-class/user-activity-emulator:${STUDENT_NAME}-0.1

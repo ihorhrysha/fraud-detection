@@ -25,7 +25,7 @@ object Main extends App {
   //)
 
   // for testing purposes only
-  new Thread(new BlackIPFetcher).start
+  //new Thread(new BlackIPFetcher).start
   DummyDataProducer.pushTestData()
 
 }

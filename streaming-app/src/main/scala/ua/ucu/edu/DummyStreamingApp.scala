@@ -7,11 +7,10 @@ import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde
 import ua.ucu.edu.model.{BlackData, EnrichedUser, User}
 import org.apache.avro.specific.SpecificRecord
-import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.common.serialization.Serde
-import org.apache.kafka.streams.kstream.{GlobalKTable, JoinWindows}
+import org.apache.kafka.streams.kstream.{GlobalKTable}
 import org.apache.kafka.streams.scala.{Serdes, StreamsBuilder}
-import org.apache.kafka.streams.{KafkaStreams, StreamsConfig, Topology}
+import org.apache.kafka.streams.{KafkaStreams, StreamsConfig}
 import org.apache.kafka.streams.scala.ImplicitConversions._
 import org.apache.kafka.streams.scala.kstream.KStream
 import org.slf4j.LoggerFactory
@@ -43,20 +42,6 @@ object DummyStreamingApp extends App {
   enrichedUsersSerde.configure(Collections.singletonMap(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, System.getenv(Config.SchemaRegistry)), false)
 
   val blackDataTable: GlobalKTable[String, BlackData] = builder.globalTable(System.getenv(Config.EnrichmentTopic))
-//
-//  // for cleaning System.getenv(Config.EnrichmentTopic)
-//  val streamBlack: KStream[String, String] = builder.stream("test_topic_out")
-//  streamBlack.foreach((k, v) => {
-//    logger.info(s"With mail processed $k->$v")
-//  })
-//
-//
-//  val streamBlack: KStream[String, BlackData] = builder.stream(System.getenv(Config.EnrichmentTopic))
-//
-//  streamBlack.selectKey((k, v) => v.data).peek((k, v) => {
-//    logger.info(s"To shmopic $k->$v")
-//  }).to("shmopic");
-
   val userActivityStream = builder.stream[String, User](System.getenv(Config.MainTopic))
 
   // branching stream
@@ -71,17 +56,19 @@ object DummyStreamingApp extends App {
     .leftJoin(blackDataTable)(
       (_, user) => user.email,
       (user, blackData) => if (blackData != null) EnrichedUser(user.name, user.email, user.IP, "bad email") else null
+      //(user, blackData) => if (blackData != null) user.IP+" bad IP" else null
     ).filter((_, enrichedUser) => enrichedUser != null).peek((k, v) => {
     logger.info(s"Enriched record mail processed $k->$v")
-  }).to("et")
+  }).to(System.getenv(Config.EnrichedTopic))
 
   branches(1)
     .leftJoin(blackDataTable)(
       (_, user) => user.IP,
       (user, blackData) => if (blackData != null) EnrichedUser(user.name, user.email, user.IP, "bad IP") else null
+      //(user, blackData) => if (blackData != null) user.email+"bad email" else null
     ).filter((_, enrichedUser) => enrichedUser != null).peek((k, v) => {
     logger.info(s"Enriched record IP processed $k->$v")
-  }).to("et")
+  }).to(System.getenv(Config.EnrichedTopic))
 
   val streams = new KafkaStreams(builder.build(), props)
   streams.cleanUp()

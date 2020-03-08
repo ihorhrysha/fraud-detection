@@ -69,12 +69,18 @@ rest-proxy:8082 - REST API
 
    After building an image with `sbt docker` you can do `sbt dockerPush` to push. Or you can do both with `dockerBuildAndPush`
 
+```bash
+aws ecr create-repository --repository-name ucu-class/black-data-provider
+aws ecr create-repository --repository-name ucu-class/user-activity-emulator 
+```
+
 #### Deployment
 
-   You're going to operate with three services separately:
-   - `weather-provider` - generator of weather data
-   - `solar-panel-emulator` - generator of sensor data
+   You're going to operate with four services separately:
+   - `black-data-provider` - generator of "black" IPs/Mails data
+   - `user-activity-emulator` - generator of fake users
    - `streaming-app` - streaming application
+   - `schema-registry` - Confluent Schema Registry
 
    Use provided script with the similar to docker-compose style commands.
    You should specify as a first argument name of the service (same names as specified above) and then follows command like `up`, `ps`, `start`, `stop`, `down`, `scale 3`.

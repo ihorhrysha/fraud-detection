@@ -66,6 +66,8 @@ object UserActivityEmulator {
           } else {
             logger.info("---Black ip injected---")
             ip = blackIpList(rand.nextInt(blackIpList.length)).trim()
+            // TODO fix with streaming app
+            email = ""
           }
         }
 

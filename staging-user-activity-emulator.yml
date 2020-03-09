@@ -3,12 +3,12 @@ services:
   user-activity-emulator:
     image: $REGISTRY_URI/ucu-class/user-activity-emulator:$STUDENT_NAME-0.1
     environment:
-      - KAFKA_BROKERS=$KAFKA_BROKERS # workaround ecs env limitation
-      - ZK_CONNECT=$ZOOKEEPER_CONNECT
-      - SCHEMA_REGISTRY = $SCHEMA_REGISTRY
-      - MAIN_TOPIC=$MAIN_TOPIC
-      - BLACKIPURL = $BLACKIPURL
-      - BLACKEMAILURL = $BLACKEMAILURL
+      KAFKA_BROKERS: $KAFKA_BROKERS # workaround ecs env limitation
+      ZK_CONNECT: $ZOOKEEPER_CONNECT
+      SCHEMA_REGISTRY: "http://service-fraud-detection-schema-registry:8081"
+      MAIN_TOPIC: $MAIN_TOPIC
+      BLACKIPURL: $BLACKIPURL
+      BLACKEMAILURL: $BLACKEMAILURL
 
     logging:
       driver: awslogs

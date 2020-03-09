@@ -3,7 +3,13 @@ services:
   black-data-provider:
     image: $REGISTRY_URI/ucu-class/black-data-provider:$STUDENT_NAME-0.1
     environment:
-      - KAFKA_BROKERS=$KAFKA_BROKERS # workaround ecs env limitation
+      KAFKA_BROKERS: $KAFKA_BROKERS # workaround ecs env limitation
+      ZK_CONNECT: $ZOOKEEPER_CONNECT
+      SCHEMA_REGISTRY: "http://service-fraud-detection-schema-registry:8081"
+      ENRICHMENT_TOPIC: ${ENRICHMENT_TOPIC}
+      BLACKIPURL: ${BLACKIPURL}
+      BLACKEMAILURL: ${BLACKEMAILURL}
+      BLACKIPURL_PUBLIC: ${BLACKIPURL_PUBLIC}
     logging:
       driver: awslogs
       options:

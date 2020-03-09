@@ -21,17 +21,25 @@ object UserActivityEmulator {
 
   // This is just for testing purposes
   def emulate(): Unit = {
+
+
     val BrokerList: String = System.getenv(Config.KafkaBrokers)
 
     val Topic = System.getenv(Config.MainTopic)
 
     val BlackIPList = System.getenv(Config.BlackIPUrl)
     val BlackEmailList = System.getenv(Config.BlackMailUrl)
+    val SchemaRegistryURL =  System.getenv(Config.SchemaRegistry)
 
     val props = new Properties()
+    logger.info("entering the application")
+    logger.info(SchemaRegistryURL)
+
     props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BrokerList)
     props.put(ProducerConfig.CLIENT_ID_CONFIG, "user-data-provider")
-    props.put("schema.registry.url", System.getenv(Config.SchemaRegistry))
+    props.put("schema.registry.url", SchemaRegistryURL)
+    //props.put("schema.registry.url", "http://schema-registry:8081")
+
     props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, classOf[StringSerializer].getCanonicalName)
     props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, classOf[KafkaAvroSerializer].getCanonicalName)
     props.put(ProducerConfig.ACKS_CONFIG, "all")

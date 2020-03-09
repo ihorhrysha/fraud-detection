@@ -123,7 +123,7 @@ Steps to deploy all containers
 
    This is essential for you to debug. Having the output of the `staging_compose ps` command with taskId, you can access logs of your service run like this:
    ```
-   ecs-cli logs --task-id 6ef4bc73-9bed-499c-91ee-390da6d2a851 --follow
+   ecs-cli logs --task-id 6d32eef2-697d-456e-811f-3a15d42bd3a4 --follow
    ```
 
 #### Interacting with Kafka

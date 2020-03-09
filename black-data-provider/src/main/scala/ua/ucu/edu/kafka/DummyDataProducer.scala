@@ -47,7 +47,7 @@ object DummyDataProducer {
         blackIpList.foreach(ip => sendMessage(producer, Topic, ip, BlackData("IP", ip)))
         blackEmailList.foreach(mail => sendMessage(producer, Topic, mail, BlackData("EMAIL", mail)))
 
-        Thread.sleep(1000*60*60*24)
+        Thread.sleep(10000)
 
       }
 
@@ -66,7 +66,7 @@ object DummyDataProducer {
       logger.info("topic: " + topic + " key: " + key + " BlackData: " + value)
     })
 
-    Thread.sleep(200)
+    Thread.sleep(500)
 
   }
 

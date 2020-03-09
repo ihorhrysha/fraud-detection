@@ -38,7 +38,7 @@ class BlackIPFetcher extends Runnable {
     while (true) {
       try {
 
-        val blackIPList = Source.fromURL(BlackIPListPublic).mkString.split(System.getProperty("line.separator")).toList
+        val blackIPList = Source.fromURL(BlackIPListPublic).mkString.split("\n").toList
         blackIPList.filter(ipString => ipString.matches("[0-9].+")).foreach(ip => sendMessage(producer, Topic, ip, BlackData("IP", ip)))
         //blackIPList.filter(ipString => ipString.matches("[0-9].+")).foreach(ip => {println(ip); Thread.sleep(1000)})
 

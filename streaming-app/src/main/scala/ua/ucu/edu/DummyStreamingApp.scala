@@ -31,6 +31,7 @@ object DummyStreamingApp extends App {
   //  props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
 
   val builder: StreamsBuilder = new StreamsBuilder
+  val builder2: StreamsBuilder = new StreamsBuilder
 
   implicit val stringSerde: Serde[String] = Serdes.String
   implicit val blackDataSerde: Serde[BlackData] = new SpecificAvroSerde[BlackData]
@@ -71,6 +72,7 @@ object DummyStreamingApp extends App {
   }).to(System.getenv(Config.EnrichedTopic))
 
   val streams = new KafkaStreams(builder.build(), props)
+
   streams.cleanUp()
   streams.start()
 

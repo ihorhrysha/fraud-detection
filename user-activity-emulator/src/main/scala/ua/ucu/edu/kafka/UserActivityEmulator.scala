@@ -52,12 +52,27 @@ object UserActivityEmulator {
       while (true) {
 
         val fname = faker.name()
-        val name = fname.fullName()
-
-        var email = fname.username() + "@" + faker.internet().domainName()
+        val firstName = fname.firstName()
+        val surname = fname.lastName()
+        var name = firstName + " " + surname
+        var email = firstName.toLowerCase() + "." + surname.toLowerCase() + "@" + faker.internet().domainName()
         var ip = faker.internet().ipV4Address()
+        val toss = rand.nextBoolean()
+        if(toss) {
+          name = "Unregistered user"
+          email = ""
+          if(rand.nextInt(100) < 10) {
+            logger.info("---Black ip injected---")
+            ip = blackIpList(rand.nextInt(blackIpList.length)).trim()
+          }
+        } else {
+          if(rand.nextInt(100) < 10) {
+            logger.info("---Black email injected---")
+            email = blackEmailList(rand.nextInt(blackEmailList.length)).trim()
+          }
+        }
 
-
+        /*
         val randInt = rand.nextInt(100)
         if(randInt<10) {
           if (randInt < 5) {
@@ -68,8 +83,10 @@ object UserActivityEmulator {
             ip = blackIpList(rand.nextInt(blackIpList.length)).trim()
             // TODO fix with streaming app
             email = ""
+            name = "Unregistered user"
           }
         }
+        */
 
         val user  = new User(name, email, ip)
 

@@ -135,7 +135,7 @@ Steps to deploy all containers
    ./kafka_client.sh
    ```
 
-   If you're on Windows - then configure Putty accordingly - use MSKKeyPair.pem file provided to you.
+   If you're on Windows - then configure Putty accordingly - use kafka-client-ec2.pem file provided to you. And make sure you have appropriate permissions set up for the file, otherwise ssh client will warn you (on unix machines `chmod 600 kafka-client-ec2.pem`)
 
    Once logged in - you can run commands below from the home dir.
 
@@ -144,25 +144,25 @@ Steps to deploy all containers
    - create/describe/list topics
      - create
      ```
-     kafka-topics.sh --zookeeper z-3.ucustreamingclass.mf5zba.c7.kafka.us-east-1.amazonaws.com:2181,z-2.ucustreamingclass.mf5zba.c7.kafka.us-east-1.amazonaws.com:2181,z-1.ucustreamingclass.mf5zba.c7.kafka.us-east-1.amazonaws.com:2181 --create --topic test_topic_out --replication-factor 3 --partitions 2
+     kafka-topics.sh --zookeeper z-2.ucustreamingclass.6parrd.c7.kafka.us-east-1.amazonaws.com:2181,z-3.ucustreamingclass.6parrd.c7.kafka.us-east-1.amazonaws.com:2181,z-1.ucustreamingclass.6parrd.c7.kafka.us-east-1.amazonaws.com:2181 --create --topic test_topic_out --replication-factor 3 --partitions 2
      ```
      - describe
      ```
-     kafka-topics.sh --zookeeper z-3.ucustreamingclass.mf5zba.c7.kafka.us-east-1.amazonaws.com:2181,z-2.ucustreamingclass.mf5zba.c7.kafka.us-east-1.amazonaws.com:2181,z-1.ucustreamingclass.mf5zba.c7.kafka.us-east-1.amazonaws.com:2181 --describe --topic test_topic_out
+     kafka-topics.sh --zookeeper z-2.ucustreamingclass.6parrd.c7.kafka.us-east-1.amazonaws.com:2181,z-3.ucustreamingclass.6parrd.c7.kafka.us-east-1.amazonaws.com:2181,z-1.ucustreamingclass.6parrd.c7.kafka.us-east-1.amazonaws.com:2181 --describe --topic test_topic_out
      ```
      - list
      ```
-     kafka-topics.sh --zookeeper z-3.ucustreamingclass.mf5zba.c7.kafka.us-east-1.amazonaws.com:2181,z-2.ucustreamingclass.mf5zba.c7.kafka.us-east-1.amazonaws.com:2181,z-1.ucustreamingclass.mf5zba.c7.kafka.us-east-1.amazonaws.com:2181 --list
+     kafka-topics.sh --zookeeper z-2.ucustreamingclass.6parrd.c7.kafka.us-east-1.amazonaws.com:2181,z-3.ucustreamingclass.6parrd.c7.kafka.us-east-1.amazonaws.com:2181,z-1.ucustreamingclass.6parrd.c7.kafka.us-east-1.amazonaws.com:2181 --list
      ```
    - consume topic
      ```
-     kafka-console-consumer.sh --bootstrap-server z-3.ucustreamingclass.mf5zba.c7.kafka.us-east-1.amazonaws.com:2181,z-2.ucustreamingclass.mf5zba.c7.kafka.us-east-1.amazonaws.com:2181,z-1.ucustreamingclass.mf5zba.c7.kafka.us-east-1.amazonaws.com:2181 --topic sensor-data --from-beginning
+     kafka-console-consumer.sh --bootstrap-server b-2.ucustreamingclass.6parrd.c7.kafka.us-east-1.amazonaws.com:9092,b-3.ucustreamingclass.6parrd.c7.kafka.us-east-1.amazonaws.com:9092,b-1.ucustreamingclass.6parrd.c7.kafka.us-east-1.amazonaws.com:9092 --topic test_topic_out --from-beginning
      ```
    - produce into topic
      ```
-     kafka-console-producer.sh --broker-list z-3.ucustreamingclass.mf5zba.c7.kafka.us-east-1.amazonaws.com:2181,z-2.ucustreamingclass.mf5zba.c7.kafka.us-east-1.amazonaws.com:2181,z-1.ucustreamingclass.mf5zba.c7.kafka.us-east-1.amazonaws.com:2181 --topic sensor-data
+     kafka-console-producer.sh --broker-list b-2.ucustreamingclass.6parrd.c7.kafka.us-east-1.amazonaws.com:9092,b-3.ucustreamingclass.6parrd.c7.kafka.us-east-1.amazonaws.com:9092,b-1.ucustreamingclass.6parrd.c7.kafka.us-east-1.amazonaws.com:9092 --topic test_topic_out
      ```
-
+     
 ###### **!!!** Important: the IP addresses of Kafka brokers may change and data in topics deleted. If so - you will be informed in the chat.
 
 #### Windows

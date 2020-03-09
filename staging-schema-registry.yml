@@ -1,15 +1,5 @@
 version: '2'
 services:
-#  black-data-provider:
-#    image: $REGISTRY_URI/ucu-class/black-data-provider:$STUDENT_NAME-0.1
-#    environment:
-#      - KAFKA_BROKERS=$KAFKA_BROKERS # workaround ecs env limitation
-#    logging:
-#      driver: awslogs
-#      options:
-#        awslogs-group: streaming-ucu
-#        awslogs-region: us-east-1
-#        awslogs-stream-prefix: $STUDENT_NAME
 
   schema-registry:
     image: confluentinc/cp-schema-registry:5.1.0
@@ -17,7 +7,7 @@ services:
       - "8081:8081"
     environment:
       SCHEMA_REGISTRY_HOST_NAME: schema-registry
-      SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: $ZOOKEEPER_CONNECT
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://b-2.ucustreamingclass.6parrd.c7.kafka.us-east-1.amazonaws.com:9092,PLAINTEXT://b-3.ucustreamingclass.6parrd.c7.kafka.us-east-1.amazonaws.com:9092,PLAINTEXT://b-1.ucustreamingclass.6parrd.c7.kafka.us-east-1.amazonaws.com:9092
     logging:
       driver: awslogs
       options:

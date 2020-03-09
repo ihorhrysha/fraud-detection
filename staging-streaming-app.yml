@@ -3,7 +3,11 @@ services:
   streaming-app:
     image: $REGISTRY_URI/ucu-class/streaming-app:$STUDENT_NAME-0.1
     environment:
-      - KAFKA_BROKERS=$KAFKA_BROKERS # workaround ecs env limitation
+      KAFKA_BROKERS: $KAFKA_BROKERS # workaround ecs env limitation
+      SCHEMA_REGISTRY: "http://service-fraud-detection-schema-registry:8081"
+      MAIN_TOPIC: ${MAIN_TOPIC}
+      ENRICHMENT_TOPIC: ${ENRICHMENT_TOPIC}
+      ENRICHED_TOPIC: ${ENRICHED_TOPIC}
     logging:
       driver: awslogs
       options:

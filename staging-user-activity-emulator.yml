@@ -4,10 +4,9 @@ services:
     image: $REGISTRY_URI/ucu-class/user-activity-emulator:$STUDENT_NAME-0.1
     environment:
       - KAFKA_BROKERS=$KAFKA_BROKERS # workaround ecs env limitation
-      #- KAFKA_BROKERS=kafka:9092
-      - ZK_CONNECT=zookeeper:2181
-      - MAIN_TOPIC=$MAIN_TOPIC
+      - ZK_CONNECT=$ZOOKEEPER_CONNECT
       - SCHEMA_REGISTRY = $SCHEMA_REGISTRY
+      - MAIN_TOPIC=$MAIN_TOPIC
       - BLACKIPURL = $BLACKIPURL
       - BLACKEMAILURL = $BLACKEMAILURL
 

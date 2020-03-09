@@ -67,7 +67,7 @@ rest-proxy:8082 - REST API
    Configurations provided to you here will tag images with *$STUDENT_NAME* by default - please, do not change this behaviour.
    You will not be able to fetch someone else's image to your machine.
 
-   After building an image with `sbt docker` you can do `sbt dockerPush` to push. Or you can do both with `dockerBuildAndPush`
+   After building an image with `sbt docker` you can do `sbt dockerPush` to push. Or you can do both with login to repo `./staging_push_images.sh`
 
 ```bash
 aws ecr create-repository --repository-name ucu-class/black-data-provider
@@ -144,7 +144,10 @@ Steps to deploy all containers
    - create/describe/list topics
      - create
      ```
-     kafka-topics.sh --zookeeper z-2.ucustreamingclass.6parrd.c7.kafka.us-east-1.amazonaws.com:2181,z-3.ucustreamingclass.6parrd.c7.kafka.us-east-1.amazonaws.com:2181,z-1.ucustreamingclass.6parrd.c7.kafka.us-east-1.amazonaws.com:2181 --create --topic test_topic_out --replication-factor 3 --partitions 2
+     kafka-topics.sh --zookeeper z-2.ucustreamingclass.6parrd.c7.kafka.us-east-1.amazonaws.com:2181,z-3.ucustreamingclass.6parrd.c7.kafka.us-east-1.amazonaws.com:2181,z-1.ucustreamingclass.6parrd.c7.kafka.us-east-1.amazonaws.com:2181 --create --topic user-activity-data --replication-factor 3 --partitions 2
+     kafka-topics.sh --zookeeper z-2.ucustreamingclass.6parrd.c7.kafka.us-east-1.amazonaws.com:2181,z-3.ucustreamingclass.6parrd.c7.kafka.us-east-1.amazonaws.com:2181,z-1.ucustreamingclass.6parrd.c7.kafka.us-east-1.amazonaws.com:2181 --create --topic black-data --replication-factor 3 --partitions 2
+     kafka-topics.sh --zookeeper z-2.ucustreamingclass.6parrd.c7.kafka.us-east-1.amazonaws.com:2181,z-3.ucustreamingclass.6parrd.c7.kafka.us-east-1.amazonaws.com:2181,z-1.ucustreamingclass.6parrd.c7.kafka.us-east-1.amazonaws.com:2181 --create --topic enriched-user-data --replication-factor 3 --partitions 2
+     
      ```
      - describe
      ```
